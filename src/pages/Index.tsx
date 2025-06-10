@@ -1,8 +1,8 @@
-
 import React, { useState } from 'react';
 import IngredientInput from '../components/IngredientInput';
 import PreferenceSelector from '../components/PreferenceSelector';
 import RecipeCard from '../components/RecipeCard';
+import RecipeDetail from '../components/RecipeDetail';
 import { Button } from '../components/ui/button';
 import { ChefHat, Utensils, Sparkles } from 'lucide-react';
 
@@ -75,6 +75,7 @@ const Index = () => {
   });
   const [foundRecipes, setFoundRecipes] = useState<Recipe[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   const findRecipes = () => {
     console.log("Searching for recipes with ingredients:", ingredients);
@@ -116,6 +117,15 @@ const Index = () => {
     
     setFoundRecipes(fakeResults);
     setHasSearched(true);
+    setSelectedRecipe(null); // Reset selected recipe when searching
+  };
+
+  const handleRecipeSelect = (recipe: Recipe) => {
+    setSelectedRecipe(recipe);
+  };
+
+  const handleBackToResults = () => {
+    setSelectedRecipe(null);
   };
 
   return (
@@ -151,71 +161,80 @@ const Index = () => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8 relative">
-        {/* Input Section */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
-          <div className="relative">
-            <IngredientInput 
-              ingredients={ingredients}
-              setIngredients={setIngredients}
-            />
-            
-            <PreferenceSelector 
-              preferences={preferences}
-              setPreferences={setPreferences}
-            />
-            
-            <div className="flex justify-center mt-8">
-              <Button 
-                onClick={findRecipes}
-                size="lg"
-                className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 hover:from-orange-600 hover:via-pink-600 hover:to-purple-700 text-white px-12 py-4 text-xl font-bold rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-110 hover:shadow-3xl border-2 border-white/20 backdrop-blur-sm"
-              >
-                <Sparkles className="mr-2 h-6 w-6" />
-                🔍 Find Amazing Recipes
-                <Sparkles className="ml-2 h-6 w-6" />
-              </Button>
+        {/* Show recipe detail if a recipe is selected */}
+        {selectedRecipe ? (
+          <RecipeDetail recipe={selectedRecipe} onBack={handleBackToResults} />
+        ) : (
+          <>
+            {/* Input Section */}
+            <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 mb-8 border border-white/20 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
+              <div className="relative">
+                <IngredientInput 
+                  ingredients={ingredients}
+                  setIngredients={setIngredients}
+                />
+                
+                <PreferenceSelector 
+                  preferences={preferences}
+                  setPreferences={setPreferences}
+                />
+                
+                <div className="flex justify-center mt-8">
+                  <Button 
+                    onClick={findRecipes}
+                    size="lg"
+                    className="bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 hover:from-orange-600 hover:via-pink-600 hover:to-purple-700 text-white px-12 py-4 text-xl font-bold rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-110 hover:shadow-3xl border-2 border-white/20 backdrop-blur-sm"
+                  >
+                    <Sparkles className="mr-2 h-6 w-6" />
+                    🔍 Find Amazing Recipes
+                    <Sparkles className="ml-2 h-6 w-6" />
+                  </Button>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Results Section */}
-        {hasSearched && (
-          <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
-            <div className="relative">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-8 text-center flex items-center justify-center gap-3">
-                {foundRecipes.length > 0 
-                  ? (
-                    <>
-                      <Sparkles className="h-8 w-8 text-yellow-500 animate-pulse" />
-                      Found {foundRecipes.length} amazing recipe{foundRecipes.length !== 1 ? 's' : ''} for you!
-                      <Sparkles className="h-8 w-8 text-yellow-500 animate-pulse" />
-                    </>
-                  )
-                  : "No recipes found with those criteria"}
-              </h2>
-              
-              {foundRecipes.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                  {foundRecipes.map(recipe => (
-                    <RecipeCard key={recipe.id} recipe={recipe} />
-                  ))}
+            {/* Results Section */}
+            {hasSearched && (
+              <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
+                <div className="relative">
+                  <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-600 via-pink-600 to-purple-600 bg-clip-text text-transparent mb-8 text-center flex items-center justify-center gap-3">
+                    {foundRecipes.length > 0 
+                      ? (
+                        <>
+                          <Sparkles className="h-8 w-8 text-yellow-500 animate-pulse" />
+                          Found {foundRecipes.length} amazing recipe{foundRecipes.length !== 1 ? 's' : ''} for you!
+                          <Sparkles className="h-8 w-8 text-yellow-500 animate-pulse" />
+                        </>
+                      )
+                      : "No recipes found with those criteria"}
+                  </h2>
+                  
+                  {foundRecipes.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {foundRecipes.map(recipe => (
+                        <div key={recipe.id} onClick={() => handleRecipeSelect(recipe)} className="cursor-pointer">
+                          <RecipeCard recipe={recipe} />
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-12">
+                      <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl p-8 max-w-md mx-auto border border-gray-200 shadow-lg">
+                        <p className="text-gray-700 mb-4 text-lg font-medium">
+                          Try adjusting your ingredients or preferences to find more recipes.
+                        </p>
+                        <p className="text-gray-600">
+                          💡 Tip: Start with common ingredients like "chicken", "pasta", or "tomatoes"
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl p-8 max-w-md mx-auto border border-gray-200 shadow-lg">
-                    <p className="text-gray-700 mb-4 text-lg font-medium">
-                      Try adjusting your ingredients or preferences to find more recipes.
-                    </p>
-                    <p className="text-gray-600">
-                      💡 Tip: Start with common ingredients like "chicken", "pasta", or "tomatoes"
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
