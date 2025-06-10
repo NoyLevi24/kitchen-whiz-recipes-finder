@@ -46,9 +46,6 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe }) => {
       
       <CardHeader className="pb-4 relative">
         <div className="flex items-center justify-between">
-          <div className="text-6xl mb-2 filter drop-shadow-lg group-hover:scale-110 transition-transform duration-300">
-            {recipe.image}
-          </div>
           <div className="flex gap-2">
             <Badge className={`${getTimeColor(recipe.cookingTime)} text-sm font-bold border-0 px-3 py-1`}>
               <Clock className="h-4 w-4 mr-1" />
