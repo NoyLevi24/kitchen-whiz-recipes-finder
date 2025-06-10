@@ -80,33 +80,41 @@ const Index = () => {
     console.log("Searching for recipes with ingredients:", ingredients);
     console.log("Preferences:", preferences);
     
-    const filtered = sampleRecipes.filter(recipe => {
-      // Check if recipe contains at least one ingredient
-      const hasIngredient = ingredients.length === 0 || 
-        ingredients.some(ingredient => 
-          recipe.ingredients.some(recipeIngredient => 
-            recipeIngredient.toLowerCase().includes(ingredient.toLowerCase())
-          )
-        );
-      
-      // Check meal type preference
-      const matchesMealType = !preferences.mealType || 
-        recipe.mealType === preferences.mealType;
-      
-      // Check dietary preferences
-      const matchesDietary = preferences.dietaryPreference.length === 0 ||
-        preferences.dietaryPreference.some(pref => 
-          recipe.dietaryPreference.includes(pref)
-        );
-      
-      // Check cooking time
-      const matchesTime = !preferences.cookingTime || 
-        recipe.cookingTime === preferences.cookingTime;
-      
-      return hasIngredient && matchesMealType && matchesDietary && matchesTime;
-    });
+    // For now, always show some fake results so you can see how it looks
+    const fakeResults = [
+      {
+        id: 1,
+        title: "Creamy Mushroom Pasta",
+        ingredients: ["pasta", "mushrooms", "cream", "garlic", "onion"],
+        cookingTime: "Medium",
+        mealType: "Dinner",
+        dietaryPreference: ["Vegetarian"],
+        description: "A rich and creamy pasta dish with sautéed mushrooms",
+        image: "🍝"
+      },
+      {
+        id: 2,
+        title: "Chicken Caesar Salad",
+        ingredients: ["chicken", "lettuce", "parmesan", "croutons", "caesar dressing"],
+        cookingTime: "Fast",
+        mealType: "Lunch",
+        dietaryPreference: [],
+        description: "Classic Caesar salad with grilled chicken breast",
+        image: "🥗"
+      },
+      {
+        id: 3,
+        title: "Chocolate Chip Cookies",
+        ingredients: ["flour", "butter", "eggs", "chocolate chips", "sugar"],
+        cookingTime: "Medium",
+        mealType: "Dessert",
+        dietaryPreference: ["Vegetarian"],
+        description: "Soft and chewy chocolate chip cookies, perfect for any occasion",
+        image: "🍪"
+      }
+    ];
     
-    setFoundRecipes(filtered);
+    setFoundRecipes(fakeResults);
     setHasSearched(true);
   };
 
