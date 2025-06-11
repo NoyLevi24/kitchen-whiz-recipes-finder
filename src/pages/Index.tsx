@@ -5,6 +5,7 @@ import RecipeCard from '../components/RecipeCard';
 import RecipeDetail from '../components/RecipeDetail';
 import { Button } from '../components/ui/button';
 import { ChefHat, Utensils, Sparkles } from 'lucide-react';
+import { findRecipes as fetchRecipes } from '../lib/api';
 
 export interface Recipe {
   id: number;
@@ -77,47 +78,16 @@ const Index = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
-  const findRecipes = () => {
-    console.log("Searching for recipes with ingredients:", ingredients);
-    console.log("Preferences:", preferences);
-    
-    // For now, always show some fake results so you can see how it looks
-    const fakeResults = [
-      {
-        id: 1,
-        title: "Creamy Mushroom Pasta",
-        ingredients: ["pasta", "mushrooms", "cream", "garlic", "onion"],
-        cookingTime: "Medium",
-        mealType: "Dinner",
-        dietaryPreference: ["Vegetarian"],
-        description: "A rich and creamy pasta dish with sautéed mushrooms",
-        image: "🍝"
-      },
-      {
-        id: 2,
-        title: "Chicken Caesar Salad",
-        ingredients: ["chicken", "lettuce", "parmesan", "croutons", "caesar dressing"],
-        cookingTime: "Fast",
-        mealType: "Lunch",
-        dietaryPreference: [],
-        description: "Classic Caesar salad with grilled chicken breast",
-        image: "🥗"
-      },
-      {
-        id: 3,
-        title: "Chocolate Chip Cookies",
-        ingredients: ["flour", "butter", "eggs", "chocolate chips", "sugar"],
-        cookingTime: "Medium",
-        mealType: "Dessert",
-        dietaryPreference: ["Vegetarian"],
-        description: "Soft and chewy chocolate chip cookies, perfect for any occasion",
-        image: "🍪"
-      }
-    ];
-    
-    setFoundRecipes(fakeResults);
-    setHasSearched(true);
-    setSelectedRecipe(null); // Reset selected recipe when searching
+  const findRecipes = async () => {
+    try {
+      const recipes = await fetchRecipes(ingredients, preferences);
+      setFoundRecipes(recipes);
+      setHasSearched(true);
+      setSelectedRecipe(null);
+    } catch (error) {
+      console.error('Error finding recipes:', error);
+      // You might want to show an error toast here
+    }
   };
 
   const handleRecipeSelect = (recipe: Recipe) => {
